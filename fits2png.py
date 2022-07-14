@@ -58,7 +58,7 @@ while True:
                     k = mvic_coeffs[int(name[2])]
                 scale = float(values["scale"])
 
-                img_np = np.array(hdul[0].data).clip(0, None) * k * scale
+                img_np = np.flip(hdul[0].data, 1).clip(0, None) * k * scale
                 img_pil = Image.fromarray(img_np)
 
                 ext = "tiff"
