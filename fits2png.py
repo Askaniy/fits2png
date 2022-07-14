@@ -6,7 +6,7 @@ from PIL import Image
 # New Horizons' MVIC conversion factors
 # https://pdssbn.astro.umd.edu/holdings/nh-j-alice-3-jupiter-v1.0/document/soc_inst_icd/soc_inst_icd.pdf table 10.6, p.63
 #              red     blue    NIR     CH4
-mvic_coeffs = (0.8088, 2.1752, 0.7898, 0.5752)
+mvic_coeffs = (0.0554, 0.149, 0.0541, 0.0394)
 
 
 sg.LOOK_AND_FEEL_TABLE["MaterialDark"] = {
@@ -55,7 +55,9 @@ while True:
                 name = "".join(path.split("/")[-1].split(".")[:-1])
                 k = 1
                 if values["MVIC"] and name[:2] == "mc":
-                    k = mvic_coeffs[int(name[2])]
+                    n = int(name[2])
+                    p(f'Recognized as {("red", "blue", "NIR", "CH4")[n]} MVIC filter')
+                    k = mvic_coeffs[n]
                 scale = float(values["scale"])
 
                 img_np = np.flip(hdul[0].data, 1).clip(0, None) * k * scale
