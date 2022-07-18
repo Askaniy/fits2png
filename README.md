@@ -1,6 +1,8 @@
 # fits2png
 A small GUI program for converting space images
 
+![image](https://user-images.githubusercontent.com/46163555/179396702-5d857a2d-9e59-4017-bf86-d0527c2b9e7a.png)
+
 ## Installation
 
 1. Clone the repository or download archive by the GitHub web interface;
