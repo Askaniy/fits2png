@@ -22,7 +22,7 @@ sg.ChangeLookAndFeel("MaterialDark")
 layout = [
     [sg.Text("FITS path", s=14), sg.Input(key="open path", s=36), sg.FileBrowse()],
     [sg.Text("PNG folder", s=14), sg.Input(key="save path", s=36), sg.FolderBrowse()],
-    [sg.Checkbox("compress to PNG", default=True, s=16, key="PNG"), sg.Text("Multiply by", s=8),
+    [sg.Checkbox("compress to PNG", default=False, s=16, key="PNG"), sg.Text("multiply by", s=8),
     sg.Input("1", s=5, key="scale"), sg.T("", s=2), sg.Checkbox("NH's MVIC filters", s=15, key="MVIC"),
     sg.Button("Start")],
     [sg.Multiline("\nWelcome! This is the log output.\n\n", size=(69, 16), key="ml")]
@@ -60,7 +60,7 @@ while True:
                     k = mvic_coeffs[n]
                 scale = float(values["scale"])
 
-                img_np = np.flip(hdul[0].data, 1).clip(0, None) * k * scale
+                img_np = np.flip(hdul[0].data, 0).clip(0, None) * k * scale
                 img_pil = Image.fromarray(img_np)
 
                 ext = "tiff"
