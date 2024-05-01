@@ -1,5 +1,5 @@
 import numpy as np
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 from astropy.io import fits
 from PIL import Image
 
@@ -17,7 +17,7 @@ bg_color = '#333333'
 inputON_color = '#424242'
 inputOFF_color = '#3A3A3A'
 
-# PySimpleGUI custom theme
+# FreeSimpleGUI custom theme
 sg.LOOK_AND_FEEL_TABLE['MaterialDark'] = {
         'BACKGROUND': bg_color, 'TEXT': text_color,
         'INPUT': inputON_color, 'TEXT_INPUT': text_color, 'SCROLL': inputON_color,
@@ -31,7 +31,7 @@ layout = [
     [sg.Text('FITS path', s=14), sg.Input(key='open path', s=47), sg.FileBrowse()],
     [sg.Text('PNG folder', s=14), sg.Input(key='save path', s=47), sg.FolderBrowse()],
     [
-        sg.Checkbox('compress to PNG', default=False, s=19, key='PNG'), sg.Text('multiply by', s=9),
+        sg.Checkbox('compress to PNG', default=True, s=19, key='PNG'), sg.Text('multiply by', s=9),
         sg.Input('1', s=5, key='scale'), sg.T('', s=2), sg.Checkbox('NH’s MVIC filters', s=16, key='MVIC'),
         sg.Button('Start')
     ],
