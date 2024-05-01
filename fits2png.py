@@ -9,29 +9,39 @@ from PIL import Image
 mvic_coeffs = (0.0554, 0.149, 0.0541, 0.0394)
 
 
-sg.LOOK_AND_FEEL_TABLE["MaterialDark"] = {
-    'BACKGROUND': '#333333', 'TEXT': '#FFFFFF',
-    'INPUT': '#424242', 'TEXT_INPUT': '#FFFFFF', 'SCROLL': '#424242',
-    'BUTTON': ('#FFFFFF', '#007ACC'), 'PROGRESS': ('#000000', '#000000'),
-    'BORDER': 0, 'SLIDER_DEPTH': 0, 'PROGRESS_DEPTH': 0,
-    'ACCENT1': '#FF0266', 'ACCENT2': '#FF5C93', 'ACCENT3': '#C5003C'
-}
-sg.ChangeLookAndFeel("MaterialDark")
+main_color = '#3884A9'
+text_color = '#FFFFFF'
+muted_color = '#A3A3A3'
+highlight_color = '#5A5A5A'
+bg_color = '#333333'
+inputON_color = '#424242'
+inputOFF_color = '#3A3A3A'
+
+# PySimpleGUI custom theme
+sg.LOOK_AND_FEEL_TABLE['MaterialDark'] = {
+        'BACKGROUND': bg_color, 'TEXT': text_color,
+        'INPUT': inputON_color, 'TEXT_INPUT': text_color, 'SCROLL': inputON_color,
+        'BUTTON': (text_color, main_color), 'PROGRESS': ('#000000', '#000000'),
+        'BORDER': 0, 'SLIDER_DEPTH': 0, 'PROGRESS_DEPTH': 0
+    }
+sg.ChangeLookAndFeel('MaterialDark')
 
 
 layout = [
-    [sg.Text("FITS path", s=14), sg.Input(key="open path", s=36), sg.FileBrowse()],
-    [sg.Text("PNG folder", s=14), sg.Input(key="save path", s=36), sg.FolderBrowse()],
-    [sg.Checkbox("compress to PNG", default=False, s=16, key="PNG"), sg.Text("multiply by", s=8),
-    sg.Input("1", s=5, key="scale"), sg.T("", s=2), sg.Checkbox("NH's MVIC filters", s=15, key="MVIC"),
-    sg.Button("Start")],
-    [sg.Multiline("\nWelcome! This is the log output.\n\n", size=(69, 16), key="ml")]
+    [sg.Text('FITS path', s=14), sg.Input(key='open path', s=47), sg.FileBrowse()],
+    [sg.Text('PNG folder', s=14), sg.Input(key='save path', s=47), sg.FolderBrowse()],
+    [
+        sg.Checkbox('compress to PNG', default=False, s=19, key='PNG'), sg.Text('multiply by', s=9),
+        sg.Input('1', s=5, key='scale'), sg.T('', s=2), sg.Checkbox('NH’s MVIC filters', s=16, key='MVIC'),
+        sg.Button('Start')
+    ],
+    [sg.Multiline('\nWelcome! This is the log output.\n\n', size=(72, 16), key='ml')]
 ]
 
-window = sg.Window("FITS to PNG", layout)
+window = sg.Window('FITS to PNG', layout)
 
-def p(text):
-    window["ml"].print(text)
+def w_print(text: str):
+    window['ml'].print(text)
 
 while True:
     event, values = window.read()
@@ -39,40 +49,40 @@ while True:
     if event == sg.WIN_CLOSED:
         break
 
-    if event == "Start":
+    if event == 'Start':
 
-        path = values["open path"]
-        save = values["save path"]
-        if save == "":
-            save = "/".join(path.split("/")[:-1])
+        path = values['open path']
+        save = values['save path']
+        if save == '':
+            save = '/'.join(path.split('/')[:-1])
         
         try:
             with fits.open(path) as hdul:
-                p("FITS info:")
+                w_print('FITS info:')
                 for i in hdul.info(False):
-                    p(i)
+                    w_print(i)
                 
-                name = "".join(path.split("/")[-1].split(".")[:-1])
+                name = ''.join(path.split('/')[-1].split('.')[:-1])
                 k = 1
-                if values["MVIC"] and name[:2] == "mc":
+                if values['MVIC'] and name[:2] == 'mc':
                     n = int(name[2])
-                    p(f'Recognized as {("red", "blue", "NIR", "CH4")[n]} MVIC filter')
+                    w_print(f'Recognized as {("red", "blue", "NIR", "CH4")[n]} MVIC filter')
                     k = mvic_coeffs[n]
-                scale = float(values["scale"])
+                scale = float(values['scale'])
 
                 img_np = np.flip(hdul[0].data, 0).clip(0, None) * k * scale
                 img_pil = Image.fromarray(img_np)
 
-                ext = "tiff"
-                if values["PNG"]:
-                    ext = "png"
-                    img_pil = img_pil.convert("I")
+                ext = 'tiff'
+                if values['PNG']:
+                    ext = 'png'
+                    img_pil = img_pil.convert('I')
                 
                 img_pil.save(f'{save}/{name}.{ext}')
 
-                p("Done\n")
+                w_print('Done\n')
 
         except Exception as e:
-            p(e)
+            w_print(e)
 
 window.close()
