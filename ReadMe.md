@@ -1,6 +1,8 @@
 # fits2png
 A small GUI program for converting space images.
 
+Current status: not supported. For better samples of my code I recommend to look at the pinned repositories.
+
 ![Screenshot](Screenshot.png)
 
 
